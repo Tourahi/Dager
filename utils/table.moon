@@ -9,8 +9,10 @@ import huge from math
 _isTable = (tab) ->
   return type(tab) == 'table'
 
+-- @local
 _isNumber = (n) ->
   return type(n) == 'number'
+
 -- @local
 _tabMinIdx = (tab) ->
   min = huge
@@ -22,6 +24,7 @@ _tabMinIdx = (tab) ->
     else
       return tab
   return min
+
 
 --- Flattens numerically indexed tables.
 -- @tparam table tab
@@ -123,6 +126,51 @@ max = (tab) ->
     return _max
   error "Only tables are accepted."
 
+--- Loop and run the callback for every element
+-- @tparam table tab
+-- @tparam function cb
+foreach = (tab, cb) ->
+  [cb v for v in *flatten tab]
 
 
-{ :flatten, :getAt, :first, :min, :max }
+--- Filter a table using the given filter
+-- @tparam table tab
+-- @tparam function f
+filter = (tab, f) ->
+  [v for v in *flatten tab when f v]
+
+
+--- Test if the table includes(contains) the given value
+-- @tparam table tab
+-- @tparam function f
+has = (tab, v) ->
+  return true if tab == v
+  if type(tab) == 'table'
+    for k, e in pairs tab
+      if type(k) == 'number'
+        return true if has e, v
+  if type(tab) == 'number'
+    return tostring(tab) == tostring(v)
+  false
+
+includes = has
+contains = has
+
+--- Excludes the given values from the table
+-- @tparam table tab
+-- @tparam table ...
+exclude = (tab, ...) ->
+  exclusions = flatten ...
+  [v for v in *flatten tab when not includes exclusions, v]
+
+{
+  :flatten
+  :getAt
+  :first
+  :min
+  :max
+  :foreach
+  :filter
+  :has, :includes, :contains
+  :exclude
+}
