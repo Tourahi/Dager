@@ -1,15 +1,29 @@
+----
+-- Pattern functions
+
 import match, sub from string
 
+Table = assert require "Dager.utils.table"
 
+
+--- Looks for a pattern using % ignores it and return the rest of the string.
+-- @usage patget "test.moon",'%.moon' -- returns : test
+-- @tparam String s
+-- @tparam String pat
 patget = (s, pat) ->
-	prefix, suffix = match pat, '^(.*)%%(.*)$'
-	return s==pat and s or nil unless prefix
-	if (sub s, 1, #prefix)==prefix and (suffix == '' or (sub s, -#suffix)==suffix)
-		sub s, #prefix+1, -#suffix-1
-	else
-		nil
+  prefix, suffix = match pat, '^(.*)%%(.*)$'
+  print prefix, suffix
+  return s==pat and s or nil unless prefix
+  if (sub s, 1, #prefix)==prefix and (suffix == '' or (sub s, -#suffix)==suffix)
+    sub s, #prefix+1, -#suffix-1
+  else
+    nil
 
 
+--- Adds a prefix and/or a suffix to a string.
+-- @usage patset "test",'more %s' -- returns : more tests
+-- @tparam String s
+-- @tparam String rep
 patset = (s, rep) ->
 	prefix, suffix = match rep, '^(.*)%%(.*)$'
 	if prefix
@@ -17,6 +31,11 @@ patset = (s, rep) ->
 	else
 		rep
 
+--- Replace a part of a string with another string.
+-- @usage patsubst "test.moon", '%.moon', '%.lua' -- returns : test.lua
+-- @tparam String s
+-- @tparam String pat
+-- @tparam String rep
 patsubst = (s, pat, rep) ->
 	prefix, suffix = match pat, '^(.*)%%(.*)$'
 	rprefix, rsuffix = match rep, '^(.*)%%(.*)$'
@@ -36,7 +55,7 @@ patsubst = (s, pat, rep) ->
 		error "can't substitute patterns on type #{t}"
 
 	r, i = {}, 1
-	for s in *flatten s
+	for s in *Table.flatten s
 		if not prefix
 			if s==pat
 				if rprefix
