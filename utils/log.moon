@@ -1,6 +1,6 @@
-
-import VERBOSE from assert require "Dager.utils.constants"
 import concat from table
+
+VERBOSE =  false -- verbose mode. default : false
 
 _tostring = tostring
 
@@ -37,6 +37,7 @@ for i, v in ipairs(modes) do levels[v.name] = i
 
 log.verbose = (arg, level = "info") ->
   if #level == 1 then level = abrNameMap[level\upper!]
+  if level == nil or #level == 0 then error "_.verbose invalid mog level."
   if arg == nil then return VERBOSE
   switch type arg
     when 'function' arg! if VERBOSE
@@ -45,7 +46,7 @@ log.verbose = (arg, level = "info") ->
       if level
         _log[level] arg if VERBOSE
       else print arg if VERBOSE
-    else error "_.logVerbose takes [no argument, a boolean, a function or a string]"
+    else error "_.verbose takes [no argument, a boolean, a function or a string]"
 
 
 log.logFileName = (name) ->
