@@ -25,11 +25,11 @@ patget = (s, pat) ->
 -- @tparam String s
 -- @tparam String rep
 patset = (s, rep) ->
-	prefix, suffix = match rep, '^(.*)%%(.*)$'
-	if prefix
-		prefix..s..suffix
-	else
-		rep
+  prefix, suffix = match rep, '^(.*)%%(.*)$'
+  if prefix
+    prefix..s..suffix
+  else
+    rep
 
 --- Replace a part of a string with another string.
 -- @usage patsubst "test.moon", '%.moon', '%.lua' -- returns : test.lua
@@ -37,37 +37,37 @@ patset = (s, rep) ->
 -- @tparam String pat
 -- @tparam String rep
 patsubst = (s, pat, rep) ->
-	prefix, suffix = match pat, '^(.*)%%(.*)$'
-	rprefix, rsuffix = match rep, '^(.*)%%(.*)$'
+  prefix, suffix = match pat, '^(.*)%%(.*)$'
+  rprefix, rsuffix = match rep, '^(.*)%%(.*)$'
 
-	t = type s
-	f = false
-	if t=='nil'
-		return nil
-	if t=='number'
-		t = 'string'
-		s = tostring s
-	if t=='string'
-		t = 'table'
-		s = {s}
-		f = true
-	if t!='table'
-		error "can't substitute patterns on type #{t}"
+  t = type s
+  f = false
+  if t=='nil'
+    return nil
+  if t=='number'
+    t = 'string'
+    s = tostring s
+  if t=='string'
+    t = 'table'
+    s = {s}
+    f = true
+  if t!='table'
+    error "can't substitute patterns on type #{t}"
 
-	r, i = {}, 1
-	for s in *Table.flatten s
-		if not prefix
-			if s==pat
-				if rprefix
-					r[i], i = rprefix..s..rsuffix, i+1
-				else
-					r[i], i = rep, i+1
-		elseif (sub s, 1, #prefix)==prefix and (suffix == '' or (sub s, -#suffix)==suffix)
-			if rprefix
-				r[i], i = rprefix..(sub s, #prefix+1, -#suffix-1)..rsuffix, i+1
-			else
-				r[i], i = rep, i+1
+  r, i = {}, 1
+  for s in *Table.flatten s
+    if not prefix
+      if s==pat
+        if rprefix
+          r[i], i = rprefix..s..rsuffix, i+1
+        else
+          r[i], i = rep, i+1
+    elseif (sub s, 1, #prefix)==prefix and (suffix == '' or (sub s, -#suffix)==suffix)
+      if rprefix
+        r[i], i = rprefix..(sub s, #prefix+1, -#suffix-1)..rsuffix, i+1
+      else
+        r[i], i = rep, i+1
 
-	f and r[1] or r
+  f and r[1] or r
 
 { :patget, :patset, :patsubst }
