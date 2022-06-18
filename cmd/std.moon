@@ -104,9 +104,50 @@ parser = (argsStr) ->
           else
             add!
 
+      when 'backslashnormal'
+        switch c
+
+          when '\n'
+            state = 'normal'
+
+          when EOF
+            fail "unexpected EOF"
+
+          else
+            add!
+            state = "normal"
 
 
+      when 'backslashdoublequote'
+        switch c
 
+          when '$'
+            add!
+            state = 'dQuote'
 
+          when '`'
+            add!
+            state = 'dQuote'
+
+          when '\"'
+            add!
+            state = 'dQuote'
+
+          when '\\'
+            add!
+            state = 'dQuote'
+
+          when '\n'
+            state = 'dQuote'
+
+          when EOF
+            fail "unexpected EOF"
+
+          else
+            addv '\\'
+            add!
+            state = 'dQuote'
+
+  args
 
 { :escape, :cmdline, :parser }
