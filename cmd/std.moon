@@ -1,6 +1,7 @@
 import gsub, sub, match from string
 import concat from table
 import flatten from require "Dager.utils.table"
+log = assert require "Dager.utils.log"
 
 specials =
 	'\"': '\\\"'
@@ -47,6 +48,8 @@ parser = (argsStr) ->
     parsing = false
   EOF = ''
 
+  log.debugParser "argsStr : " .. argsStr
+
   while parsing
     i += 1
     c = sub argsStr, i, i
@@ -57,65 +60,84 @@ parser = (argsStr) ->
 
           when '\"'
             state = 'dQuote'
+            log.debugParser "normal : dQuote"
 
           when '\''
             state = 'sQuote'
+            log.debugParser "normal : sQuote"
 
           when ' '
             push!
+            log.debugParser "normal : space"
 
           when '\n'
             push!
+            log.debugParser "normal : '\\n'"
 
           when '\\'
             state = 'backslashnormal'
+            log.debugParser "normal : backslashnormal"
 
           when EOF
             push!
             finish!
+            log.debugParser "normal : EOF"
 
           else
             add!
+            log.debugParser "normal : ELSE"
+
 
       when 'dQuote'
         switch c
 
           when '\"'
             state = 'normal'
+            log.debugParser "dQuote : dQuote"
 
           when '\\'
             state = 'backslashdoublequote'
+            log.debugParser "dQuote : backslashdoublequote"
 
           when EOF
             fail "unexpected EOF"
+            print "mo"
+            log.debugParser "dQuote : EOF"
 
           else
             add!
+            log.debugParser "dQuote : ELSE"
 
       when 'sQuote'
         switch c
 
           when '\''
             state = 'normal'
+            log.debugParser "sQuote : sQuote"
 
           when EOF
             fail "unexpected EOF"
+            log.debugParser "sQuote : EOF"
 
           else
             add!
+            log.debugParser "sQuote : ELSE"
 
       when 'backslashnormal'
         switch c
 
           when '\n'
             state = 'normal'
+            log.debugParser "backslashnormal : '\\n'"
 
           when EOF
             fail "unexpected EOF"
+            log.debugParser "backslashnormal : EOF"
 
           else
             add!
             state = "normal"
+            log.debugParser "backslashnormal : ELSE"
 
 
       when 'backslashdoublequote'
@@ -124,29 +146,37 @@ parser = (argsStr) ->
           when '$'
             add!
             state = 'dQuote'
+            log.debugParser "backslashdoublequote : char $"
 
           when '`'
             add!
             state = 'dQuote'
+            log.debugParser "backslashdoublequote : char `"
 
           when '\"'
             add!
             state = 'dQuote'
+            log.debugParser "backslashdoublequote : dQuote"
 
           when '\\'
             add!
             state = 'dQuote'
+            log.debugParser "backslashdoublequote : backslashdoublequote"
 
           when '\n'
             state = 'dQuote'
+            log.debugParser "backslashdoublequote : '\\n'"
+
 
           when EOF
             fail "unexpected EOF"
+            log.debugParser "backslashdoublequote : EOF"
 
           else
             addv '\\'
             add!
             state = 'dQuote'
+            log.debugParser "backslashdoublequote : ELSE"
 
   args
 

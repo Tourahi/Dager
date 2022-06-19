@@ -2,5 +2,5 @@
 
 
 {
-
+  LOGDEBUGPARSER: true
 }

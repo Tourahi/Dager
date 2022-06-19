@@ -2,6 +2,8 @@ import concat from table
 
 VERBOSE =  false -- verbose mode. default : false
 
+import LOGDEBUGPARSER from assert require "Dager.utils.constants"
+
 _tostring = tostring
 
 -- Options
@@ -129,6 +131,16 @@ for i, x in ipairs(modes) do
         x.abr, os.date(), lineinfo, msg)
       fp\write(str)
       fp\close()
+
+log.debugParser = (msg) ->
+  if LOGDEBUGPARSER
+    log.stackLevel = 4
+    if VERBOSE == false then  log.verbose true
+    if type(msg) == 'string'
+      print log.verbose(msg, 'd')
+    if type(msg) == 'table' then print log.verbose(log.dump(msg), 'd')
+    VERBOSE = false
+    log.stackLevel = 3
 
 log.dump = dump -- Mostly for debugging purposes
 
