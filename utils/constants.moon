@@ -1,6 +1,7 @@
-
+----
+-- Table of constants that can change :).
 
 
 {
-  LOGDEBUGPARSER: true
+  LOGDEBUGPARSER: false -- Used to log the steps of the parser.
 }

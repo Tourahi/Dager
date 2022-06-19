@@ -1,6 +1,11 @@
+----
+-- Cmd functions
+
 import gsub, sub, match from string
 import concat from table
 import flatten from require "Dager.utils.table"
+import execute from os
+
 log = assert require "Dager.utils.log"
 
 specials =
@@ -12,6 +17,8 @@ specials =
 	'\t': '\\t'
 
 
+--- Replaces a special char.
+-- @tparam string c
 replaceSpecial = (c) ->
   specials[c] or c
 
@@ -20,10 +27,13 @@ escape = (arg) ->
   return arg if match arg, "^[a-zA-Z0-9_.-]+$"
   '"'..gsub(arg, "([\"\\\n\r\t])", replaceSpecial)..'"'
 
--- concat args with spaces between them
+--- Concat args with spaces between them
+-- @tparam table ...
 cmdline = (...) ->
 	concat [escape arg for arg in *flatten ...], ' '
 
+--- Parses an arg string.(Can be verbose if LOGDEBUGPARSER is on)
+-- @tparam string argsStr
 parser = (argsStr) ->
   state = 'normal'
 
@@ -180,4 +190,12 @@ parser = (argsStr) ->
 
   args
 
-{ :escape, :cmdline, :parser }
+--- Execute a command using lua's os.execute
+-- @tparam string cmd
+exe = (cmd) ->
+  a, b, c = execute cmd
+  if type a == 'boolean' then return a, b, c
+  else
+    a==0 or nil, 'exit', a
+
+{ :escape, :cmdline, :parser, :exe }

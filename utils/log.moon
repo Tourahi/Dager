@@ -37,6 +37,7 @@ levels = {}
 for i, v in ipairs(modes) do levels[v.name] = i
 
 
+--- Verbose loging.s
 log.verbose = (arg, level = "info") ->
   if #level == 1 then level = abrNameMap[level\upper!]
   if level == nil or #level == 0 then error "_.verbose invalid mog level."
@@ -51,16 +52,19 @@ log.verbose = (arg, level = "info") ->
     else error "_.verbose takes [no argument, a boolean, a function or a string]"
 
 
+--- The name of the log file
 log.logFileName = (name) ->
   assert type(name) == 'string' and #name > 0, "File name is invalid."
   log.outfile = name or log.outfile
 
 
+--- @local
 round = (x, increment) ->
   increment = increment or 1
   x = x / increment
   return (x > 0 and math.floor(x + .5) or math.ceil(x - .5)) * increment
 
+--- @local
 tostring = (...) ->
   t = {}
   for i = 1, select('#', ...)
@@ -72,6 +76,8 @@ tostring = (...) ->
 
   return table.concat(t, " ")
 
+--- Dumps a table moonscript style
+-- @tparam table value
 dump = (value) ->
   local _dump -- recursive func
   _dump = (val, depth) ->
@@ -132,6 +138,7 @@ for i, x in ipairs(modes) do
       fp\write(str)
       fp\close()
 
+--- Logger for the parser (DEBUG)
 log.debugParser = (msg) ->
   if LOGDEBUGPARSER
     log.stackLevel = 4
