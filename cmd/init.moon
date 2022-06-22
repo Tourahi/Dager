@@ -33,4 +33,4 @@ for f in *({'cmd', 'cmdrst', 'sh'})
       orig ...
 
 
-setmetatable cmd, __call: => {'cmd', 'cmdrst', 'cmdline', 'cmdlinerst', 'sh'}
+setmetatable cmd, __call: => {'cmd', 'cmdrst', 'sh'}

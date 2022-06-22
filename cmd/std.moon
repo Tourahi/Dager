@@ -9,12 +9,12 @@ import execute from os
 log = assert require "Dager.utils.log"
 
 specials =
-	'\"': '\\\"'
-	'\\': '\\\\'
-	'\'': '\\\''
-	'\n': '\\n'
-	'\r': '\\r'
-	'\t': '\\t'
+  '\"': '\\\"'
+  '\\': '\\\\'
+  '\'': '\\\''
+  '\n': '\\n'
+  '\r': '\\r'
+  '\t': '\\t'
 
 
 --- Replaces a special char.
